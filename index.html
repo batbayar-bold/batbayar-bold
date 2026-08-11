@@ -1,139 +1,302 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Batbayar Bold - AI Engineer</title>
+    <title>Batbayar Bold – Softwareentwickler, E-Commerce und Web-Systeme</title>
+    <meta name="description" content="Softwareentwickler aus Koblenz mit acht Jahren Erfahrung. E-Commerce und Buchungssysteme, PHP/Symfony, TypeScript, React und Vue.">
+    <meta property="og:title" content="Batbayar Bold – Softwareentwickler">
+    <meta property="og:description" content="Acht Jahre E-Commerce und Buchungssysteme. Die Buchungsstrecke, die ich bei pepXpress neu gebaut habe, machte danach 25 % mehr Conversion.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://batbayarbold.com/">
+
+    <!--
+    ============================================================
+    VOR DEM DEPLOY PRUEFEN (Batbayar):
+    1. E-Mail-Adresse: steht unten als bold.bb@gmail.com.
+       Eine Adresse festlegen und in CV, LinkedIn, GitHub, hier
+       identisch verwenden.
+    2. Zeitraeume: nur pepXpress (2019-2020) und Freelance (seit
+       05/2025) sind gesetzt. Bei Genius, Avirto und hochfein
+       stehen keine Jahre. Trag sie exakt so ein wie im
+       Lebenslauf, oder lass sie weg. Abweichungen zum CV sind
+       teurer als fehlende Angaben.
+    3. Der Labor-Abschnitt verlinkt auf ein GitHub-Repo, das es
+       noch nicht gibt. Entweder Repo anlegen oder den Link
+       vorerst entfernen.
+    4. Lebenslauf-PDF unter /cv-batbayar-bold.pdf ablegen, sonst
+       Download-Link entfernen.
+    ============================================================
+    -->
+
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --ink: #1c2126;
+            --muted: #5f6a75;
+            --line: #dfe4e9;
+            --ground: #f5f7f9;
+            --accent: #b5622c;
+            --deep: #1b3a5c;
+        }
         body {
-            font-family: 'Arial', sans-serif;
-            line-height: 1.6;
-            color: #333;
+            font-family: 'IBM Plex Sans', system-ui, sans-serif;
+            line-height: 1.65;
+            color: var(--ink);
+            font-size: 1.02rem;
         }
-        .jumbotron {
-            background-color: #f8f9fa;
-            padding: 2rem 1rem;
+        .navbar { border-bottom: 1px solid var(--line); background: #fff !important; }
+        .navbar-brand { font-weight: 600; letter-spacing: -0.01em; }
+        .nav-link { font-size: 0.94rem; color: var(--muted) !important; }
+        .nav-link:hover { color: var(--accent) !important; }
+
+        .hero { padding: 5.5rem 0 4rem; border-bottom: 1px solid var(--line); }
+        .hero h1 {
+            font-size: clamp(2.1rem, 5vw, 3.1rem);
+            font-weight: 600;
+            letter-spacing: -0.025em;
+            margin-bottom: 1.25rem;
+            color: var(--deep);
         }
-        .section {
-            padding: 4rem 0;
+        .hero .lead {
+            font-size: clamp(1.1rem, 2.4vw, 1.35rem);
+            color: var(--ink);
+            max-width: 46ch;
+            line-height: 1.5;
         }
-        .skill-item {
-            margin-bottom: 1rem;
+        .status {
+            display: inline-block;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.82rem;
+            color: var(--accent);
+            border: 1px solid var(--accent);
+            border-radius: 2px;
+            padding: 0.3rem 0.7rem;
+            margin-top: 1.75rem;
         }
+
+        .section { padding: 4.25rem 0; }
+        .section + .section { border-top: 1px solid var(--line); }
+        .bg-ground { background: var(--ground); }
+        h2 {
+            font-size: 0.82rem;
+            font-family: 'IBM Plex Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.13em;
+            color: var(--accent);
+            margin-bottom: 1.75rem;
+        }
+        h3 { font-size: 1.12rem; font-weight: 600; margin-bottom: 0.4rem; }
+        p { max-width: 68ch; }
+        .prose p + p { margin-top: 0.9rem; }
+
+        .proof { border-left: 2px solid var(--accent); padding-left: 1.1rem; }
+        .proof .figure {
+            font-size: 2.15rem;
+            font-weight: 600;
+            color: var(--deep);
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+        }
+        .proof .label { color: var(--muted); font-size: 0.93rem; margin-top: 0.3rem; }
+
+        .stack-group h5 {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--muted);
+            margin-bottom: 0.5rem;
+        }
+        .stack-group p { font-size: 0.97rem; }
+
+        .entry { padding: 1.5rem 0; border-bottom: 1px solid var(--line); }
+        .entry:last-child { border-bottom: none; }
+        .entry .meta {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--muted);
+            margin-bottom: 0.35rem;
+        }
+        .entry p { margin-bottom: 0; color: #2f3841; }
+
+        a { color: var(--deep); text-decoration-color: var(--line); text-underline-offset: 3px; }
+        a:hover { color: var(--accent); }
+        .btn-primary { background: var(--deep); border-color: var(--deep); }
+        .btn-primary:hover { background: #16304c; border-color: #16304c; }
+        .btn-outline-secondary { color: var(--deep); border-color: var(--line); }
+        .btn-outline-secondary:hover { background: var(--deep); border-color: var(--deep); }
+
+        footer { border-top: 1px solid var(--line); padding: 2rem 0; color: var(--muted); font-size: 0.88rem; }
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container">
-            <a class="navbar-brand" href="#">Batbayar Bold</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#about">About</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#skills">Skills</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#projects">Projects</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#contact">Contact</a>
-                    </li>
-                </ul>
+
+<nav class="navbar navbar-expand-lg sticky-top">
+    <div class="container">
+        <a class="navbar-brand" href="#">Batbayar Bold</a>
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Navigation umschalten">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" href="#arbeitsweise">Arbeitsweise</a></li>
+                <li class="nav-item"><a class="nav-link" href="#arbeit">Arbeit</a></li>
+                <li class="nav-item"><a class="nav-link" href="#labor">Labor</a></li>
+                <li class="nav-item"><a class="nav-link" href="#kontakt">Kontakt</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<header class="hero">
+    <div class="container">
+        <h1>Batbayar Bold</h1>
+        <p class="lead">Ich baue und modernisiere Web-Systeme, mit denen Menschen Geld ausgeben. Seit acht Jahren, meistens in gewachsenem Code.</p>
+        <span class="status">Suche aktuell eine Festanstellung in Deutschland</span>
+    </div>
+</header>
+
+<section class="section">
+    <div class="container">
+        <h2>Kurz</h2>
+        <div class="row g-4 mb-5">
+            <div class="col-md-4">
+                <div class="proof">
+                    <div class="figure">+25&nbsp;%</div>
+                    <div class="label">Conversion nach dem Neubau der Kreuzfahrt-Buchungsstrecke bei pepXpress</div>
+                </div>
             </div>
-        </div>
-    </nav>
-
-    <header class="jumbotron text-center">
-        <h1 class="display-4">Batbayar Bold</h1>
-        <p class="lead">AI Software Engineer | Problem Solver | Tech Enthusiast</p>
-    </header>
-
-    <section id="about" class="section">
-        <div class="container">
-            <h2 class="mb-4">About Me</h2>
-            <p>I'm a passionate software engineer with 5+ years of experience in developing robust and scalable applications. My expertise lies in full-stack development, with a focus on creating efficient and user-friendly solutions for complex problems.</p>
-        </div>
-    </section>
-
-    <section id="skills" class="section bg-light">
-        <div class="container">
-            <h2 class="mb-4">Skills</h2>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="skill-item">
-                        <h5>Languages</h5>
-                        <p>JavaScript, Python, Java, C++</p>
-                    </div>
+            <div class="col-md-4">
+                <div class="proof">
+                    <div class="figure">8 Jahre</div>
+                    <div class="label">Berufserfahrung in der Webentwicklung, Schwerpunkt E-Commerce und Buchungssysteme</div>
                 </div>
-                <div class="col-md-4">
-                    <div class="skill-item">
-                        <h5>Frontend</h5>
-                        <p>React, Angular, Vue.js, HTML5, CSS3</p>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="skill-item">
-                        <h5>Backend</h5>
-                        <p>Node.js, Django, Spring Boot, SQL, NoSQL</p>
-                    </div>
+            </div>
+            <div class="col-md-4">
+                <div class="proof">
+                    <div class="figure">2 B.Sc.</div>
+                    <div class="label">Angewandte Statistik (Mongolei) und Digitale Medien (Hochschule Fulda), dazu AWS Certified Cloud Practitioner</div>
                 </div>
             </div>
         </div>
-    </section>
 
-    <section id="projects" class="section">
-        <div class="container">
-            <h2 class="mb-4">Featured Projects</h2>
-            <div class="row">
-                <div class="col-md-6 mb-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">E-commerce Platform</h5>
-                            <p class="card-text">Developed a scalable e-commerce solution using React and Node.js, featuring real-time inventory management and secure payment integration.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 mb-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">AI-powered Chatbot</h5>
-                            <p class="card-text">Created an intelligent customer service chatbot using Python and natural language processing techniques, improving response times by 50%.</p>
-                        </div>
-                    </div>
-                </div>
+        <div class="prose">
+            <p>Ich wohne in Koblenz und arbeite seit Mai 2025 freiberuflich. Davor war ich angestellt, unter anderem als Senior-Entwickler bei pepXpress in der Touristik und bei Genius im Shopware-Umfeld. Mein erstes Studium war Statistik, mein zweites Digitale Medien. Aus dem einen kommt der Blick auf Zahlen, aus dem anderen der auf Interfaces. Beides brauche ich in dem, was ich mache.</p>
+        </div>
+    </div>
+</section>
+
+<section id="arbeitsweise" class="section bg-ground">
+    <div class="container">
+        <h2>Arbeitsweise</h2>
+        <div class="row g-5">
+            <div class="col-lg-4">
+                <h3>Gewachsene Systeme statt Greenfield</h3>
+                <p class="text-secondary">Fast alles, was ich gebaut habe, lief schon, als ich dazukam. Ich lese mich in fremde Codebasen ein, ohne dass jemand danebensitzt und sie erklärt, und baue dann in kleinen, überprüfbaren Schritten um. Alles auf einmal neu zu schreiben ist selten die günstigere Rechnung.</p>
+            </div>
+            <div class="col-lg-4">
+                <h3>Zahlen vor Meinung</h3>
+                <p class="text-secondary">Ob eine Änderung etwas gebracht hat, sieht man an der Zahl und nicht an der Diskussion darüber. Bei der Buchungsstrecke bei pepXpress war die Zahl 25 Prozent. Genau dafür ist der Statistik-Hintergrund gut, den ich sonst selten erwähne.</p>
+            </div>
+            <div class="col-lg-4">
+                <h3>KI-gestützt, aber geprüft</h3>
+                <p class="text-secondary">Ich arbeite täglich mit agentischen Coding-Tools, meistens Claude Code. Den Unterschied macht nicht der Prompt, sondern der Kontext: erst die Codebase lesen lassen, die Zusammenfassung korrigieren, dann in kleinen Schritten bauen. Bei Auth, Migrationen und allem, was Kundendaten anfasst, lese ich jede Zeile selbst.</p>
             </div>
         </div>
-    </section>
 
-    <section id="contact" class="section bg-light">
-        <div class="container">
-            <h2 class="mb-4">Get in Touch</h2>
-            <p>I'm always open to discussing new projects or opportunities. Feel free to reach out!</p>
-            <div class="mt-4">
-                <a href="mailto:bold.bb@gmail.com" class="btn btn-primary me-2">
-                    <i class="fas fa-envelope"></i> Email Me
-                </a>
-                <a href="https://linkedin.com/in/batbayar-bold/" target="_blank" class="btn btn-outline-primary me-2">
-                    <i class="fab fa-linkedin"></i> LinkedIn
-                </a>
-                <a href="https://github.com/batbayar-bold" target="_blank" class="btn btn-outline-dark">
-                    <i class="fab fa-github"></i> GitHub
-                </a>
+        <div class="row g-4 mt-4 pt-3 border-top">
+            <div class="col-md-4 stack-group">
+                <h5>Backend</h5>
+                <p class="text-secondary mb-0">PHP, Symfony, Node.js, MySQL, PostgreSQL, REST- und GraphQL-APIs</p>
+            </div>
+            <div class="col-md-4 stack-group">
+                <h5>Frontend</h5>
+                <p class="text-secondary mb-0">TypeScript, JavaScript, React, Vue, Twig, HTML, CSS</p>
+            </div>
+            <div class="col-md-4 stack-group">
+                <h5>E-Commerce und Infrastruktur</h5>
+                <p class="text-secondary mb-0">Shopware 5 und 6, Shopify, Docker, CI/CD, AWS</p>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <footer class="bg-dark text-white text-center py-3">
-        <p>&copy; 2024 Batbayar Bold. All rights reserved.</p>
-    </footer>
+<section id="arbeit" class="section">
+    <div class="container">
+        <h2>Ausgewählte Arbeit</h2>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+        <div class="entry">
+            <div class="meta">2019–2020 &nbsp;·&nbsp; pepXpress &nbsp;·&nbsp; Senior-Entwickler</div>
+            <h3>Buchungsstrecke für Kreuzfahrten neu gebaut</h3>
+            <p>Verfügbarkeiten und Preise kamen aus Fremdsystemen, dazu Kabinenkategorien, Kombinationsregeln und eine Preislogik, die sich täglich ändert. Im alten Checkout sind die Kunden abgesprungen. Nach dem Neubau lag die Conversion Rate 25 Prozent höher. Was mir fast mehr sagt als die Zahl: pepXpress hat mich später für ein zweites Mandat zurückgeholt.</p>
+        </div>
+
+        <div class="entry">
+            <div class="meta">Genius GmbH &nbsp;·&nbsp; Entwickler</div>
+            <h3>Shopware 5 und 6, Plugins und Schnittstellen</h3>
+            <p>Eigene Plugins, Anbindungen an ERP- und Zahlungssysteme, Shops mit echtem Umsatz dahinter. Der Sprung von Shopware 5 auf 6 ist kein Update, sondern ein Bruch. Wer ihn einmal durchgezogen hat, versteht, warum man Systeme in Etappen ablöst und nicht an einem Wochenende.</p>
+        </div>
+
+        <div class="entry">
+            <div class="meta">Avirto und hochfein Interaktive &nbsp;·&nbsp; Webentwickler</div>
+            <h3>Agenturjahre</h3>
+            <p>Viele Projekte parallel, ständiger Wechsel zwischen fremden Codebasen, kurze Einarbeitung. Dort habe ich gelernt, mich schnell in ein System hineinzudenken, das mir niemand erklärt.</p>
+        </div>
+
+        <div class="entry">
+            <div class="meta">seit 05/2025 &nbsp;·&nbsp; freiberuflich</div>
+            <h3>Web- und E-Commerce-Projekte auf eigene Rechnung</h3>
+            <p>Einarbeitung ohne Einarbeitungszeit, direkter Kundenkontakt, eigene Priorisierung. Und die Erfahrung, selbst zu rechnen, ob ein Feature den Aufwand wert ist. Das verändert, wie man über technische Eleganz redet.</p>
+        </div>
+    </div>
+</section>
+
+<section id="labor" class="section bg-ground">
+    <div class="container">
+        <h2>Labor</h2>
+        <div class="prose">
+            <p>Ich betreibe einen eigenen Shopify-Shop, um Dinge auszuprobieren, die ich in Kundenprojekten nur von außen sehe. Gerade baue ich dort server-seitiges Conversion-Tracking über die Pinterest Conversions API, weil Tracking im Browser Events verliert und die Attribution damit still kaputtgeht. Node und TypeScript, OAuth2, Webhooks, asynchrone Jobs, Deduplizierung von Events.</p>
+            <p>Der Nebeneffekt ist der eigentliche Punkt: Wenn man den Shop selbst betreibt, merkt man sofort, was eine stille fehlgeschlagene Automation kostet. Das ändert die Prioritäten beim Bauen.</p>
+            <p class="mt-4"><a href="https://github.com/batbayar-bold" target="_blank" rel="noopener">Code und Notizen auf GitHub</a></p>
+        </div>
+    </div>
+</section>
+
+<section id="kontakt" class="section">
+    <div class="container">
+        <h2>Kontakt</h2>
+        <div class="prose">
+            <p>Ich suche eine Festanstellung als Softwareentwickler in Deutschland, gern dort, wo ein Produkt über Jahre gepflegt wird und nicht alle sechs Monate ein neues Projekt beginnt. Wenn das nach Ihrem Team klingt, schreiben Sie mir.</p>
+        </div>
+        <div class="mt-4 d-flex flex-wrap gap-2">
+            <a href="mailto:bold.bb@gmail.com" class="btn btn-primary">
+                <i class="fas fa-envelope me-1"></i> E-Mail schreiben
+            </a>
+            <a href="https://linkedin.com/in/batbayar-bold/" target="_blank" rel="noopener" class="btn btn-outline-secondary">
+                <i class="fab fa-linkedin me-1"></i> LinkedIn
+            </a>
+            <a href="https://github.com/batbayar-bold" target="_blank" rel="noopener" class="btn btn-outline-secondary">
+                <i class="fab fa-github me-1"></i> GitHub
+            </a>
+            <a href="/cv-batbayar-bold.pdf" class="btn btn-outline-secondary">
+                <i class="fas fa-file-arrow-down me-1"></i> Lebenslauf als PDF
+            </a>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <div class="container d-flex flex-wrap justify-content-between gap-2">
+        <span>&copy; 2026 Batbayar Bold</span>
+        <span>Koblenz, Deutschland</span>
+    </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
