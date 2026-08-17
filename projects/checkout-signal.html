@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout Signal — Shopify → Pinterest Conversions API · Batbayar Bold</title>
+    <meta name="description" content="Case study: a server-side Shopify → Pinterest Conversions API relay. Hashed identity, deduplicated, verified against a real order.">
+    <meta property="og:title" content="Checkout Signal — Shopify → Pinterest Conversions API">
+    <meta property="og:description" content="A server-side relay that reports Shopify purchases to Pinterest directly from the server — hashed, deduplicated, and verified against a real order.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://batbayarbold.com/projects/checkout-signal.html">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #1c2126;
+            --muted: #5f6a75;
+            --line: #dfe4e9;
+            --ground: #f5f7f9;
+            --accent: #b5622c;
+            --deep: #1b3a5c;
+            --code-bg: #14202c;
+            --code-ink: #dbe4ea;
+            --code-soft: #8ba0b3;
+            --code-mark: rgba(181, 98, 44, 0.22);
+        }
+        body {
+            font-family: 'IBM Plex Sans', system-ui, sans-serif;
+            line-height: 1.65;
+            color: var(--ink);
+            font-size: 1.02rem;
+        }
+        .navbar { border-bottom: 1px solid var(--line); background: #fff !important; }
+        .navbar-brand { font-weight: 600; letter-spacing: -0.01em; color: var(--ink) !important; }
+        .back-link {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.86rem;
+            color: var(--muted) !important;
+        }
+        .back-link:hover { color: var(--accent) !important; }
+
+        .hero { padding: 4.5rem 0 3.5rem; border-bottom: 1px solid var(--line); }
+        .eyebrow {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.8rem;
+            letter-spacing: 0.13em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+        .hero h1 {
+            font-size: clamp(1.9rem, 4.4vw, 2.9rem);
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            margin-bottom: 1.1rem;
+            color: var(--deep);
+        }
+        .hero .lead {
+            font-size: clamp(1.05rem, 2vw, 1.22rem);
+            color: var(--ink);
+            max-width: 60ch;
+            line-height: 1.55;
+        }
+        .status {
+            display: inline-block;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--accent);
+            border: 1px solid var(--accent);
+            border-radius: 2px;
+            padding: 0.28rem 0.65rem;
+            margin-top: 1.5rem;
+        }
+
+        .section { padding: 3.75rem 0; }
+        .section + .section { border-top: 1px solid var(--line); }
+        .bg-ground { background: var(--ground); }
+        h2.eyebrow-head {
+            font-size: 0.8rem;
+            font-family: 'IBM Plex Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.13em;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+        }
+        h3.step-title { font-size: 1.08rem; font-weight: 600; margin-bottom: 0.4rem; }
+        h3.card-title { font-size: 1.15rem; font-weight: 600; margin-bottom: 0.6rem; color: var(--deep); }
+        p { max-width: 68ch; }
+        .prose p + p { margin-top: 0.9rem; }
+
+        .proof { border-left: 2px solid var(--accent); padding-left: 1.1rem; }
+        .proof .figure {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--deep);
+            letter-spacing: -0.01em;
+            line-height: 1.1;
+        }
+        .proof .label { color: var(--muted); font-size: 0.88rem; margin-top: 0.35rem; }
+
+        figure.diagram { margin: 2.5rem 0 0; }
+        figure.diagram svg { width: 100%; height: auto; display: block; color: var(--ink); }
+        figure.diagram figcaption {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.82rem;
+            color: var(--muted);
+            line-height: 1.6;
+            margin-top: 1.1rem;
+            max-width: 68ch;
+        }
+
+        .step { display: grid; grid-template-columns: 32px 1fr; gap: 0 1.1rem; margin-top: 2.5rem; }
+        .step:first-child { margin-top: 0; }
+        .step-num {
+            font-family: 'IBM Plex Mono', monospace;
+            font-weight: 700;
+            font-size: 0.88rem;
+            color: var(--accent);
+            padding-top: 0.2rem;
+        }
+
+        pre {
+            background: var(--code-bg);
+            color: var(--code-ink);
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.8rem;
+            line-height: 1.65;
+            padding: 1.1rem 1.25rem;
+            overflow-x: auto;
+            margin: 1rem 0 0;
+            border-radius: 3px;
+        }
+        pre .c { color: var(--code-soft); font-style: italic; }
+        pre mark {
+            background: var(--code-mark);
+            color: var(--code-ink);
+            box-shadow: -1.25rem 0 0 var(--code-mark), 1.25rem 0 0 var(--code-mark);
+        }
+
+        dl.decisions { margin: 0; }
+        dl.decisions .row { padding: 1.1rem 0; border-top: 1px solid var(--line); }
+        dl.decisions .row:last-child { border-bottom: 1px solid var(--line); }
+        dl.decisions dt {
+            font-family: 'IBM Plex Mono', monospace;
+            font-weight: 600;
+            font-size: 0.92rem;
+            color: var(--ink);
+        }
+        dl.decisions dd { margin: 0; color: var(--muted); font-size: 0.96rem; }
+
+        ul.scorecard { list-style: none; padding: 0; margin: 0; }
+        ul.scorecard li {
+            display: grid;
+            grid-template-columns: 22px 1fr;
+            gap: 0 0.7rem;
+            padding: 0.55rem 0;
+            font-size: 0.98rem;
+        }
+        .mark-good { color: #2e7d4f; font-family: 'IBM Plex Mono', monospace; font-weight: 700; }
+        .mark-open { color: var(--accent); font-family: 'IBM Plex Mono', monospace; font-weight: 700; }
+        ul.scorecard code {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.87em;
+            background: var(--ground);
+            padding: 0.05rem 0.3rem;
+            border-radius: 2px;
+        }
+
+        .stack-line {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--muted);
+        }
+        .stack-line span:not(:last-child)::after { content: " · "; color: var(--line); }
+
+        a { color: var(--deep); text-decoration-color: var(--line); text-underline-offset: 3px; }
+        a:hover { color: var(--accent); }
+        footer.page-footer { border-top: 1px solid var(--line); padding: 2rem 0; color: var(--muted); font-size: 0.88rem; }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg sticky-top">
+    <div class="container d-flex justify-content-between align-items-center">
+        <a class="navbar-brand" href="../index.html">Batbayar Bold</a>
+        <a class="back-link" href="../index.html#arbeit"><i class="fas fa-arrow-left me-1"></i>Zurück zur Startseite</a>
+    </div>
+</nav>
+
+<header class="hero">
+    <div class="container">
+        <p class="eyebrow">Case Study — Shopify → Pinterest</p>
+        <h1>Checkout Signal</h1>
+        <p class="lead">
+            Ad blockers, Safari's ITP, and iOS quietly delete a chunk of every store's
+            purchase signal before it reaches the ad platform. I built the server-side
+            relay that reports it directly instead — hashed, deduplicated, and verified
+            against a real order, not a demo.
+        </p>
+        <span class="status">7-day spike · verified end-to-end</span>
+
+        <div class="row g-4 mt-4 pt-2">
+            <div class="col-6 col-md-3">
+                <div class="proof">
+                    <div class="figure">27 / 27</div>
+                    <div class="label">Unit tests passing</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="proof">
+                    <div class="figure">1 / 1</div>
+                    <div class="label">Live order → events processed</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="proof">
+                    <div class="figure">order_id</div>
+                    <div class="label">Dedup key, cross-source</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="proof">
+                    <div class="figure">SHA-256</div>
+                    <div class="label">PII, hashed server-only</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<section class="section">
+    <div class="container">
+        <h2 class="eyebrow-head">The problem</h2>
+        <div class="prose">
+            <p>
+                Most Shopify stores report a purchase to their ad platform with a single
+                browser pixel firing after checkout. That pixel is exactly what ad
+                blockers, tracking prevention, and iOS are built to stop — so the platform
+                underreports conversions, optimizes against incomplete data, and the store
+                never finds out.
+            </p>
+            <p>
+                A Conversions API (CAPI) fixes this by having the <em>store's own server</em>
+                tell the ad platform "this person converted" — a channel no browser
+                extension can touch. Meta, Pinterest, TikTok, and Snap all expose one, and
+                they're structurally identical: a pixel and a server, a shared event id,
+                hashed identity, a dedup window. I learned the mechanics on Meta's docs —
+                the best-written of the four — and built the working pipe against
+                Pinterest.
+            </p>
+        </div>
+    </div>
+</section>
+
+<section class="section bg-ground">
+    <div class="container">
+        <h2 class="eyebrow-head">What I built</h2>
+        <h3 class="card-title">A Shopify app that relays checkout_completed to Pinterest, server-side</h3>
+        <div class="prose">
+            <p>
+                A web pixel extension runs inside Shopify's locked-down storefront
+                sandbox, catches the <code>checkout_completed</code> event, and hands the
+                raw fields to my app's server. The server — not the browser — stamps the
+                shopper's real IP and user-agent, hashes any PII, and relays a Pinterest
+                Conversions API event keyed to the order id.
+            </p>
+        </div>
+
+        <figure class="diagram" role="img" aria-label="Data flow: the storefront pixel extracts checkout fields and forwards them across a trust boundary to the app server, which stamps IP and user-agent from request headers, hashes PII, and sends a deduplicated event to the Pinterest Conversions API.">
+            <svg viewBox="0 0 860 300" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                        <path d="M0,0 L10,5 L0,10 z" fill="currentColor" />
+                    </marker>
+                </defs>
+
+                <line x1="300" y1="20" x2="300" y2="260" stroke="currentColor" stroke-opacity="0.3" stroke-dasharray="3 5" />
+                <text x="300" y="14" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="10.5" letter-spacing="0.06em" fill="currentColor" fill-opacity="0.55">TRUST BOUNDARY</text>
+
+                <rect x="14" y="96" width="196" height="92" fill="none" stroke="currentColor" stroke-width="1.4" />
+                <text x="112" y="132" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="14" font-weight="700" fill="currentColor">Storefront pixel</text>
+                <text x="112" y="152" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="10.5" fill="currentColor" fill-opacity="0.6">sandboxed · no DOM</text>
+                <text x="112" y="168" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="10.5" fill="currentColor" fill-opacity="0.6">no cookies · no backend</text>
+
+                <rect x="332" y="70" width="216" height="150" fill="none" stroke="currentColor" stroke-width="1.4" />
+                <text x="440" y="98" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="14" font-weight="700" fill="currentColor">/api/collect</text>
+                <text x="440" y="116" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="10" fill="currentColor" fill-opacity="0.5">your server</text>
+                <line x1="352" y1="130" x2="528" y2="130" stroke="currentColor" stroke-opacity="0.22" />
+                <text x="440" y="150" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="10.5" fill="currentColor" fill-opacity="0.78">stamp client_ip + user_agent</text>
+                <text x="440" y="167" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="10.5" fill="currentColor" fill-opacity="0.78">from request headers</text>
+                <text x="440" y="192" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="10.5" fill="currentColor" fill-opacity="0.78">SHA-256 hash email</text>
+
+                <rect x="670" y="96" width="176" height="92" fill="none" stroke="currentColor" stroke-width="1.4" />
+                <text x="758" y="132" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="14" font-weight="700" fill="currentColor">Pinterest CAPI</text>
+                <text x="758" y="152" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="10.5" fill="currentColor" fill-opacity="0.6">v5 /events</text>
+                <text x="758" y="168" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="10.5" fill="currentColor" fill-opacity="0.6">Events Manager</text>
+
+                <line x1="210" y1="142" x2="326" y2="142" stroke="currentColor" stroke-width="1.4" marker-end="url(#arrow)" />
+                <text x="268" y="128" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="10.5" fill="currentColor">fetch()</text>
+
+                <line x1="548" y1="142" x2="664" y2="142" stroke="currentColor" stroke-width="1.4" marker-end="url(#arrow)" />
+                <text x="606" y="128" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="10.5" fill="currentColor">POST /events</text>
+                <text x="606" y="234" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="10.5" fill="currentColor" fill-opacity="0.6">event_id = order_id</text>
+
+                <circle cx="112" cy="250" r="10" fill="none" stroke="currentColor" stroke-width="1.2" />
+                <text x="112" y="254" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="10.5" fill="currentColor">1</text>
+                <circle cx="440" cy="250" r="10" fill="none" stroke="currentColor" stroke-width="1.2" />
+                <text x="440" y="254" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="10.5" fill="currentColor">2/3</text>
+                <circle cx="758" cy="250" r="10" fill="none" stroke="currentColor" stroke-width="1.2" />
+                <text x="758" y="254" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="10.5" fill="currentColor">4</text>
+            </svg>
+            <figcaption>
+                The pixel runs sandboxed in the browser and can't read the shopper's real
+                IP or write cookies — it only extracts checkout fields and forwards them.
+                Everything that needs trust (identity stamping, hashing, the actual
+                Pinterest call) happens after the request crosses onto the server. Numbers
+                match the walkthrough below.
+            </figcaption>
+        </figure>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <h2 class="eyebrow-head">How it works</h2>
+
+        <div class="step">
+            <span class="step-num">1</span>
+            <div>
+                <h3 class="step-title">Capture inside the sandbox</h3>
+                <p>
+                    The web pixel subscribes to <code>checkout_completed</code> — the most
+                    reliable purchase signal Shopify exposes, since it only fires after the
+                    order is confirmed server-side — and pulls out just the fields the CAPI
+                    payload needs.
+                </p>
+                <pre><span class="c">// extensions/capi-web-pixel/src/index.ts</span>
+analytics.subscribe("checkout_completed", (event) =&gt; {
+  <mark>const extracted = {
+    order_id: checkout.order?.id ?? checkout.token, // dedup key
+    email: checkout.email,                          // hashed on the server, never here
+    total: checkout.totalPrice?.amount,
+    currency: checkout.currencyCode,
+    lineItems: checkout.lineItems?.map(item =&gt; ({...})),
+  };</mark>
+
+  fetch(settings.collectEndpointUrl, {
+    method: "POST",
+    body: JSON.stringify(extracted),
+  });
+});</pre>
+            </div>
+        </div>
+
+        <div class="step">
+            <span class="step-num">2</span>
+            <div>
+                <h3 class="step-title">Stamp identity the sandbox can't see</h3>
+                <p>
+                    Pinterest needs at least one identity signal per event — a hashed
+                    email, <em>or</em> the client IP and user-agent. The pixel sandbox has
+                    no access to the real client IP, so the server reads it off the
+                    request headers instead, checking the common proxy/CDN variants in
+                    priority order.
+                </p>
+                <pre><span class="c">// app/routes/api.collect.tsx</span>
+<mark>const clientIpAddress =
+  request.headers.get("cf-connecting-ip") ??
+  request.headers.get("true-client-ip") ??
+  request.headers.get("x-real-ip") ??
+  request.headers.get("x-forwarded-for")?.split(",")[0]?.trim();</mark>
+const clientUserAgent = request.headers.get("user-agent");</pre>
+            </div>
+        </div>
+
+        <div class="step">
+            <span class="step-num">3</span>
+            <div>
+                <h3 class="step-title">Hash before it ever leaves the server</h3>
+                <p>
+                    Email and phone are normalized (trim, lowercase) and SHA-256 hashed in
+                    a platform-agnostic module — written once against Meta's spec, reused
+                    verbatim for Pinterest, since both require the same
+                    normalize-then-hash rule.
+                </p>
+                <pre><span class="c">// app/lib/capi/hash.ts</span>
+<mark>export function normalizeAndHash(raw?: string | null): string | undefined {
+  const normalized = raw?.trim().toLowerCase();
+  return normalized ? sha256(normalized) : undefined;
+}</mark></pre>
+            </div>
+        </div>
+
+        <div class="step">
+            <span class="step-num">4</span>
+            <div>
+                <h3 class="step-title">Send once, retry on the failures worth retrying</h3>
+                <p>
+                    A 4xx from Pinterest (bad payload, missing identity) won't succeed on
+                    a second try, so it returns immediately. A network error or 5xx gets
+                    exponential backoff. The function never throws — a failed forward gets
+                    logged, not crashed on.
+                </p>
+                <pre><span class="c">// app/lib/capi/pinterestClient.ts</span>
+<mark>if (response.ok || response.status &lt; 500) {
+  return { ok: response.ok, status: response.status, result };
+}
+<span class="c">// 5xx and network errors: exponential backoff, then give up cleanly</span></mark>
+await delay(retryDelayMs * 2 ** attempt);</pre>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section bg-ground">
+    <div class="container">
+        <h2 class="eyebrow-head">Decisions I'd defend</h2>
+        <dl class="decisions">
+            <div class="row">
+                <div class="col-md-3"><dt>Public route, not App Proxy</dt></div>
+                <div class="col-md-9"><dd>The pixel has no session and no admin auth context, so the collect endpoint is a plain public POST route rather than an authenticated App Proxy — CORS wide open by necessity, since the storefront origin isn't known in advance.</dd></div>
+            </div>
+            <div class="row">
+                <div class="col-md-3"><dt>event_id = order_id</dt></div>
+                <div class="col-md-9"><dd>Simple, stable, and already the field both a client-side tag and this server relay would independently agree on — the whole point of a dedup key.</dd></div>
+            </div>
+            <div class="row">
+                <div class="col-md-3"><dt>Consent gated at the source</dt></div>
+                <div class="col-md-9"><dd>The pixel checks Shopify's <code>marketingAllowed</code> signal and skips the forward entirely on an explicit opt-out, rather than collecting and filtering downstream.</dd></div>
+            </div>
+            <div class="row">
+                <div class="col-md-3"><dt>PII redaction is the platform's default, not a bug</dt></div>
+                <div class="col-md-9"><dd>Since Dec 2025, Shopify nulls email/phone in pixel payloads unless the app is explicitly approved for protected customer data. Building against that meant designing the IP+UA fallback identity path from day one, not as a patch.</dd></div>
+            </div>
+        </dl>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <h2 class="eyebrow-head">Honest scorecard</h2>
+        <ul class="scorecard">
+            <li><span class="mark-good">✓</span><span>Verified against a real order — <code>6722974548010</code> — with Pinterest returning <code>num_events_processed: 1</code>, no forward error.</span></li>
+            <li><span class="mark-good">✓</span><span>27 unit tests across 4 files: hashing determinism, user-data assembly, Pinterest payload shape, retry/backoff behavior.</span></li>
+            <li><span class="mark-open">△</span><span>Match quality currently rests on IP + user-agent, not email — the protected-data approval that unlocks a real hashed-email match is in progress.</span></li>
+            <li><span class="mark-open">△</span><span>Dedup is designed but not yet exercised against a second, client-side Pinterest tag on the same order.</span></li>
+            <li><span class="mark-open">△</span><span>Single platform, single event type by design — this was a scoped week, not the ceiling. Order-webhook sourcing (no browser dependency at all) and fan-out to more ad platforms are the natural next slice.</span></li>
+        </ul>
+    </div>
+</section>
+
+<footer class="page-footer">
+    <div class="container">
+        <p class="stack-line mb-2">
+            <span>TypeScript</span><span>React Router 7</span><span>Vitest</span>
+            <span>Shopify Web Pixels API</span><span>Pinterest Conversions API v5</span>
+        </p>
+        <a href="../index.html#arbeit"><i class="fas fa-arrow-left me-1"></i>Zurück zur Startseite</a>
+    </div>
+</footer>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" rel="stylesheet">
+</body>
+</html>
